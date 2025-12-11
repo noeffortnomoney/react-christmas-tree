@@ -18,22 +18,30 @@ export default function ChristmasTree(): JSX.Element {
 
   // when popup opens (openId set) ensure fireworks run and auto-stop after 10s
   useEffect(() => {
-    if (openId !== null) {
-      setFireworksActive(true);
-      if (autoStopTimer.current) window.clearTimeout(autoStopTimer.current);
-      autoStopTimer.current = window.setTimeout(() => {
-        // Do NOT stop main video, only stop popup effects
-    setFireworksActive(false);
-      }, 10000) as unknown as number;
+  if (openId !== null) {
+    setFireworksActive(true);
+
+    // Stop fireworks after 10s
+    if (autoStopTimer.current) window.clearTimeout(autoStopTimer.current);
+    autoStopTimer.current = window.setTimeout(() => {
+      setFireworksActive(false);
+    }, 10000);
+
+      // 🔥 Auto-close popup after 20s
+      const autoClose = setTimeout(() => {
+        setOpenId(null);
+        setFireworksActive(false);
+      }, 20000);
+
       return () => {
-        if (autoStopTimer.current) window.clearTimeout(autoStopTimer.current);
-        autoStopTimer.current = null;
+        clearTimeout(autoClose);
+        if (autoStopTimer.current) clearTimeout(autoStopTimer.current);
       };
     }
-    // when popup closed, make sure fireworks are off
+
     setFireworksActive(false);
-    return undefined;
   }, [openId]);
+
 
   // open handler: start fireworks immediately, show popup immediately (no delay)
   const handleOpen = (id: number) => {
@@ -105,7 +113,7 @@ export default function ChristmasTree(): JSX.Element {
         {/* Main background video, centered */}
         <video
           src="https://res.cloudinary.com/ddcbvgrxw/video/upload/v1765263461/Hailuo_Video_chuy%E1%BB%83n_%E1%BA%A3nh_th%C3%A0nh_video_c%C3%B3_%C4%91%E1%BB%99_d_454689996606468096_wcpwdc.mp4"
-          className="rounded-lg mx-auto block max-h-full max-w-full object-contain"
+          className="mx-auto block max-h-full max-w-full object-contain"
           autoPlay
           loop
           muted
@@ -123,7 +131,8 @@ export default function ChristmasTree(): JSX.Element {
             transition={{ repeat: Infinity, duration: 2 + (idx % 3) * 0.2, ease: "easeInOut", delay: idx * 0.06 }}
           >
             {/* Glow halo */}
-            <motion.div
+            <div className="w-20 h-20 rounded-full"></div>
+            {/* <motion.div
               className="w-18 h-18 rounded-full"
               style={{
                 background:
@@ -132,7 +141,7 @@ export default function ChristmasTree(): JSX.Element {
               }}
               animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.25, 1] }}
               transition={{ repeat: Infinity, duration: 2 + (idx % 2) * 0.4 }}
-            />
+            /> */}
           </motion.div>
         ))}
 
@@ -151,7 +160,7 @@ export default function ChristmasTree(): JSX.Element {
                 <Fireworks active={fireworksActive} key={openId ?? 0} />
               </div>
 
-              <div className="relative z-20 rounded-xl">
+              <div className="relative z-20">
                 <button
                   onClick={handleClose}
                   className="absolute right-2 top-2 z-30 bg-black/70 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center"
@@ -162,7 +171,7 @@ export default function ChristmasTree(): JSX.Element {
 
                 <video
                   src="https://res.cloudinary.com/ddcbvgrxw/video/upload/v1765272670/1209_djpeju.mp4"
-                  className="w-full rounded-xl shadow-xl mx-auto block"
+                  className="w-full shadow-xl mx-auto block"
                   autoPlay
                   loop
                   muted
@@ -274,13 +283,13 @@ function Fireworks({ active }: { active: boolean }): JSX.Element {
               })}
 
               {/* center flash */}
-              <motion.div
+              {/* <motion.div
                 className="absolute rounded-full border-[3px] border-white/90"
                 style={{ width: 12, height: 12, left: -6, top: -6 }}
                 initial={{ opacity: 1, scale: 0 }}
                 animate={{ opacity: [1, 0], scale: [0, 4] }}
                 transition={{ duration: 1.2, repeat: active ? Infinity : 0 }}
-              />
+              /> */}
             </div>
           );
         })}
