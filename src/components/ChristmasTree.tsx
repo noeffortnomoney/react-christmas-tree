@@ -107,12 +107,12 @@ export default function ChristmasTree(): JSX.Element {
 
       {/* Main container (centered to match iPad 1620x2160) */}
       <div
-        className="relative w-full h-[100dvh] mx-auto select-none flex justify-center items-center overflow-hidden"
+        className="relative w-full h-\[100dvh\] mx-auto select-none flex justify-center items-center overflow-hidden"
         style={{ maxHeight: "2160px", maxWidth: "1620px", margin: "0 auto" }}
       >
         {/* Main background video, centered */}
         <video
-          src="https://res.cloudinary.com/ddcbvgrxw/video/upload/v1765263461/Hailuo_Video_chuy%E1%BB%83n_%E1%BA%A3nh_th%C3%A0nh_video_c%C3%B3_%C4%91%E1%BB%99_d_454689996606468096_wcpwdc.mp4"
+          src="https://res.cloudinary.com/ddcbvgrxw/video/upload/v1765425321/BocTham_1620x1954_-_Testcode_haxvzm.mp4"
           className="mx-auto block max-h-full max-w-full object-contain"
           autoPlay
           loop
@@ -131,8 +131,8 @@ export default function ChristmasTree(): JSX.Element {
             transition={{ repeat: Infinity, duration: 2 + (idx % 3) * 0.2, ease: "easeInOut", delay: idx * 0.06 }}
           >
             {/* Glow halo */}
-            <div className="w-20 h-20 rounded-full"></div>
-            {/* <motion.div
+            {/* <div className="w-18 h-18 rounded-full"></div> */}
+            <motion.div
               className="w-18 h-18 rounded-full"
               style={{
                 background:
@@ -141,7 +141,7 @@ export default function ChristmasTree(): JSX.Element {
               }}
               animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.25, 1] }}
               transition={{ repeat: Infinity, duration: 2 + (idx % 2) * 0.4 }}
-            /> */}
+            />
           </motion.div>
         ))}
 
@@ -150,8 +150,17 @@ export default function ChristmasTree(): JSX.Element {
             if (!open) handleClose();
           }}>
           {/* DialogContent requires a DialogTitle for accessibility — keep it present but visually hidden */}
-          <DialogContent className="bg-transparent shadow-none border-none p-0 fixed inset-0 flex justify-center items-center z-50">
-            <div className="relative w-full max-w-sm pointer-events-auto">
+          <DialogContent 
+  className="bg-transparent shadow-none border-none p-0 
+             fixed inset-0 flex items-center justify-center 
+             z-[300] max-w-none"
+>
+
+            <div 
+  className="relative pointer-events-auto"
+  style={{ width: "100%", height: "100%", maxWidth: "1620px", maxHeight: "2160px" }}
+>
+
               <div className="sr-only">
                 <DialogTitle>Christmas tree ornament popup</DialogTitle>
               </div>
@@ -171,7 +180,7 @@ export default function ChristmasTree(): JSX.Element {
 
                 <video
                   src="https://res.cloudinary.com/ddcbvgrxw/video/upload/v1765272670/1209_djpeju.mp4"
-                  className="w-full shadow-xl mx-auto block"
+                  className="w-full h-full object-contain"
                   autoPlay
                   loop
                   muted
