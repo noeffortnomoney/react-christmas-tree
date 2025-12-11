@@ -1,12 +1,6 @@
-//from "../ui/dialog";
-
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 
 type Ornament = { id: number; x: string; y: string };
 
@@ -15,19 +9,21 @@ export default function ChristmasTree(): JSX.Element {
   const [fireworksActive, setFireworksActive] = useState(false);
   const openTimer = useRef<number | null>(null);
   const autoStopTimer = useRef<number | null>(null);
+  const [showText, setShowText] = useState(false);
 
-  // when popup opens (openId set) ensure fireworks run and auto-stop after 10s
+  /* ---------------------------------------------
+      EFFECT: When popup opens → fireworks on 10s
+      Auto close popup after 20s
+  ----------------------------------------------*/
   useEffect(() => {
-  if (openId !== null) {
-    setFireworksActive(true);
+    if (openId !== null) {
+      setFireworksActive(true);
 
-    // Stop fireworks after 10s
-    if (autoStopTimer.current) window.clearTimeout(autoStopTimer.current);
-    autoStopTimer.current = window.setTimeout(() => {
-      setFireworksActive(false);
-    }, 10000);
+      if (autoStopTimer.current) window.clearTimeout(autoStopTimer.current);
+      autoStopTimer.current = window.setTimeout(() => {
+        setFireworksActive(false);
+      }, 10000);
 
-      // 🔥 Auto-close popup after 20s
       const autoClose = setTimeout(() => {
         setOpenId(null);
         setFireworksActive(false);
@@ -42,8 +38,9 @@ export default function ChristmasTree(): JSX.Element {
     setFireworksActive(false);
   }, [openId]);
 
-
-  // open handler: start fireworks immediately, show popup immediately (no delay)
+  /* ---------------------------------------------
+      OPEN POPUP
+  ----------------------------------------------*/
   const handleOpen = (id: number) => {
     if (openTimer.current) window.clearTimeout(openTimer.current);
     if (autoStopTimer.current) {
@@ -53,8 +50,14 @@ export default function ChristmasTree(): JSX.Element {
 
     setFireworksActive(true);
     setOpenId(id);
+
+    setShowText(false);
+    setTimeout(() => setShowText(true), 300);
   };
 
+  /* ---------------------------------------------
+      CLOSE POPUP
+  ----------------------------------------------*/
   const handleClose = () => {
     if (openTimer.current) {
       window.clearTimeout(openTimer.current);
@@ -68,6 +71,9 @@ export default function ChristmasTree(): JSX.Element {
     setFireworksActive(false);
   };
 
+  /* ---------------------------------------------
+      ORNAMENT POSITIONS
+  ----------------------------------------------*/
   const ornaments: Ornament[] = [
     { id: 1, x: "49%", y: "14%" },
     { id: 2, x: "48%", y: "28%" },
@@ -76,18 +82,11 @@ export default function ChristmasTree(): JSX.Element {
     { id: 5, x: "56%", y: "58%" },
     { id: 6, x: "38%", y: "64%" },
     { id: 7, x: "47%", y: "64%" },
-    // const ornaments: Ornament[] = [
-    // { id: 1, x: "48%", y: "14%" },
-    // { id: 2, x: "47%", y: "28%" },
-    // { id: 3, x: "57%", y: "40%" },
-    // { id: 4, x: "33%", y: "48%" },
-    // { id: 5, x: "65%", y: "58%" },
-    // { id: 6, x: "24%", y: "64%" },
-    // { id: 7, x: "44%", y: "64%" },
   ];
-  
 
-  // Editable messages for each ornament (index = id-1). You can edit these 7 entries directly.
+  /* ---------------------------------------------
+      TEXT MESSAGES
+  ----------------------------------------------*/
   const messages = [
     ["Bạn đã trúng", "01 gối Kymdan", "PressureFree Air"],
     ["Bạn đã trúng", "01 gối Kymdan", "Glory Air"],
@@ -100,27 +99,27 @@ export default function ChristmasTree(): JSX.Element {
 
   return (
     <>
-      {/* Snow overlay (pointer-events-none so it doesn't block clicks) */}
+      {/* Snow overlay */}
       <div className="pointer-events-none absolute inset-0 z-20">
         <SnowEffect />
       </div>
 
-      {/* Main container (centered to match iPad 1620x2160) */}
+      {/* MAIN CONTAINER */}
       <div
         className="relative w-full h-\[100dvh\] mx-auto select-none flex justify-center items-center overflow-hidden"
-        style={{ maxHeight: "2160px", maxWidth: "1620px", margin: "0 auto" }}
+        style={{ maxHeight: "1954px", maxWidth: "1620px", margin: "0 auto" }}
       >
-        {/* Main background video, centered */}
+        {/* BACKGROUND VIDEO */}
         <video
           src="https://res.cloudinary.com/ddcbvgrxw/video/upload/v1765425321/BocTham_1620x1954_-_Testcode_haxvzm.mp4"
-          className="mx-auto block max-h-full max-w-full object-contain"
+          className="w-full h-auto max-h-\[100dvh\] object-contain mx-auto block"
           autoPlay
           loop
           muted
           playsInline
         />
 
-        {/* Ornament Hotspots with glow + floating animation */}
+        {/* HOTSPOTS */}
         {ornaments.map((o, idx) => (
           <motion.div
             key={o.id}
@@ -128,10 +127,13 @@ export default function ChristmasTree(): JSX.Element {
             className="absolute cursor-pointer"
             style={{ left: o.x, top: o.y, transform: "translate(-50%, -50%)" }}
             animate={{ y: [0, -6 - (idx % 2) * 2, 0], rotate: [-2, 2, -2] }}
-            transition={{ repeat: Infinity, duration: 2 + (idx % 3) * 0.2, ease: "easeInOut", delay: idx * 0.06 }}
+            transition={{
+              repeat: Infinity,
+              duration: 2 + (idx % 3) * 0.2,
+              ease: "easeInOut",
+              delay: idx * 0.06,
+            }}
           >
-            {/* Glow halo */}
-            {/* <div className="w-18 h-18 rounded-full"></div> */}
             <motion.div
               className="w-18 h-18 rounded-full"
               style={{
@@ -145,58 +147,77 @@ export default function ChristmasTree(): JSX.Element {
           </motion.div>
         ))}
 
-        {/* Popup dialog with fireworks effect */}
-        <Dialog open={openId !== null} onOpenChange={(open) => {
-            if (!open) handleClose();
-          }}>
-          {/* DialogContent requires a DialogTitle for accessibility — keep it present but visually hidden */}
-          <DialogContent 
-  className="bg-transparent shadow-none border-none p-0 
-             fixed inset-0 flex items-center justify-center 
-             z-[300] max-w-none"
->
-
-            <div 
-  className="relative pointer-events-auto"
-  style={{ width: "100%", height: "100%", maxWidth: "1620px", maxHeight: "2160px" }}
->
-
+        {/* POPUP */}
+        <Dialog open={openId !== null} onOpenChange={(o) => !o && handleClose()}>
+          <DialogContent
+            className="bg-transparent shadow-none border-none p-0 
+            fixed inset-0 flex items-center justify-center 
+            z-\[300\] max-w-none"
+          >
+            <div
+              className="relative pointer-events-auto"
+              style={{
+                width: "100%",
+                height: "100%",
+                maxWidth: "1620px",
+                maxHeight: "2160px",
+              }}
+            >
               <div className="sr-only">
                 <DialogTitle>Christmas tree ornament popup</DialogTitle>
               </div>
 
+              {/* FIREWORKS */}
               <div className="absolute inset-0 z-50 pointer-events-none">
                 <Fireworks active={fireworksActive} key={openId ?? 0} />
               </div>
 
+              {/* POPUP CONTENT */}
               <div className="relative z-20">
+                {/* X BUTTON */}
                 <button
                   onClick={handleClose}
-                  className="absolute right-2 top-2 z-30 bg-black/70 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center"
-                  aria-label="Close prize"
+                  className="absolute right-2 top-2 z-30 
+                  bg-black/70 text-white 
+                  w-20 h-20 rounded-full 
+                  text-2xl flex items-center justify-center 
+                  border-2 border-white/90 shadow-md"
                 >
                   ✕
                 </button>
 
+                {/* POPUP VIDEO */}
                 <video
                   src="https://res.cloudinary.com/ddcbvgrxw/video/upload/v1765272670/1209_djpeju.mp4"
-                  className="w-full h-full object-contain"
+                  className="object-contain mx-auto
+                    w-full h-auto
+                    max-h-[1954px] 
+                    max-w-[1620px]
+                    sm:w-[90%] md:w-[80%] lg:w-full"
                   autoPlay
                   loop
                   muted
                   playsInline
                 />
 
+                {/* TEXT */}
                 {messages.map((lines, idx) => (
-                  <p
+                  <motion.p
                     key={idx}
-                    className="absolute inset-0 flex flex-col items-center justify-center text-center text-xl font-bold text-black z-30 pointer-events-none leading-tight"
-                    style={{ display: openId === idx + 1 ? 'flex' : 'none' }}
+                    className="absolute inset-0 flex flex-col items-center justify-center 
+                      text-center text-6xl font-bold text-black 
+                      z-30 pointer-events-none leading-tight"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{
+                      opacity: openId === idx + 1 && showText ? 1 : 0,
+                      scale: openId === idx + 1 && showText ? 1 : 0.9,
+                    }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
                   >
                     <span>{lines[0]}</span>
                     <span>{lines[1]}</span>
                     <span>{lines[2]}</span>
-                  </p>
+                  </motion.p>
                 ))}
               </div>
             </div>
@@ -207,9 +228,10 @@ export default function ChristmasTree(): JSX.Element {
   );
 }
 
-/* Snow effect component (medium density, subtle shimmer) */
+/* ---------------------------------------------
+      SNOW EFFECT
+----------------------------------------------*/
 function SnowEffect(): JSX.Element {
-  // create a set of flakes with different sizes/delays
   const flakes = Array.from({ length: 48 }).map((_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -224,7 +246,13 @@ function SnowEffect(): JSX.Element {
         <motion.div
           key={f.id}
           className="absolute bg-white rounded-full opacity-80"
-          style={{ left: `${f.left}%`, width: f.size, height: f.size, top: -10, filter: "drop-shadow(0 0 6px rgba(255,255,255,0.6))" }}
+          style={{
+            left: `${f.left}%`,
+            width: f.size,
+            height: f.size,
+            top: -10,
+            filter: "drop-shadow(0 0 6px rgba(255,255,255,0.6))",
+          }}
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: [-20, 110 + Math.random() * 20], opacity: [0, 1, 0.85] }}
           transition={{ duration: f.duration, delay: f.delay, repeat: Infinity, ease: "linear" }}
@@ -234,9 +262,10 @@ function SnowEffect(): JSX.Element {
   );
 }
 
-/* Fireworks effect (medium-heavy, multicolor bursts) */
+/* ---------------------------------------------
+      FIREWORKS
+----------------------------------------------*/
 function Fireworks({ active }: { active: boolean }): JSX.Element {
-  // random bursts across area
   const bursts = Array.from({ length: 6 }).map(() => ({
     x: Math.random() * 100,
     y: Math.random() * 60 + 10,
@@ -254,14 +283,11 @@ function Fireworks({ active }: { active: boolean }): JSX.Element {
           }));
 
           return (
-            <div
-              key={i}
-              className="absolute"
-              style={{ left: `${b.x}%`, top: `${b.y}%` }}
-            >
+            <div key={i} className="absolute" style={{ left: `${b.x}%`, top: `${b.y}%` }}>
               {particles.map((p) => {
                 const tx = Math.cos(p.angle) * p.speed;
                 const ty = Math.sin(p.angle) * p.speed;
+
                 return (
                   <motion.div
                     key={p.id}
@@ -290,15 +316,6 @@ function Fireworks({ active }: { active: boolean }): JSX.Element {
                   />
                 );
               })}
-
-              {/* center flash */}
-              {/* <motion.div
-                className="absolute rounded-full border-[3px] border-white/90"
-                style={{ width: 12, height: 12, left: -6, top: -6 }}
-                initial={{ opacity: 1, scale: 0 }}
-                animate={{ opacity: [1, 0], scale: [0, 4] }}
-                transition={{ duration: 1.2, repeat: active ? Infinity : 0 }}
-              /> */}
             </div>
           );
         })}
