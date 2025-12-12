@@ -12,8 +12,8 @@ export default function ChristmasTree(): JSX.Element {
   const [showText, setShowText] = useState(false);
 
   /* ---------------------------------------------
-      EFFECT: When popup opens → fireworks on 10s
-      Auto close popup after 20s
+      EFFECT: When popup opens → fireworks on 7s
+      Auto close popup after 15s
   ----------------------------------------------*/
   useEffect(() => {
     if (openId !== null) {
@@ -22,12 +22,12 @@ export default function ChristmasTree(): JSX.Element {
       if (autoStopTimer.current) window.clearTimeout(autoStopTimer.current);
       autoStopTimer.current = window.setTimeout(() => {
         setFireworksActive(false);
-      }, 10000);
+      }, 7000);
 
       const autoClose = setTimeout(() => {
         setOpenId(null);
         setFireworksActive(false);
-      }, 20000);
+      }, 15000);
 
       return () => {
         clearTimeout(autoClose);
