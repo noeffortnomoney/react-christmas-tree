@@ -232,7 +232,7 @@ export default function ChristmasTree(): JSX.Element {
       SNOW EFFECT
 ----------------------------------------------*/
 function SnowEffect(): JSX.Element {
-  const flakes = Array.from({ length: 48 }).map((_, i) => ({
+  const flakes = Array.from({ length: 36 }).map((_, i) => ({
     id: i,
     left: Math.random() * 100,
     size: 6 + Math.random() * 8,
@@ -266,7 +266,7 @@ function SnowEffect(): JSX.Element {
       FIREWORKS
 ----------------------------------------------*/
 function Fireworks({ active }: { active: boolean }): JSX.Element {
-  const bursts = Array.from({ length: 6 }).map(() => ({
+  const bursts = Array.from({ length: 4 }).map(() => ({
     x: Math.random() * 100,
     y: Math.random() * 60 + 10,
     hue: Math.floor(Math.random() * 360),
